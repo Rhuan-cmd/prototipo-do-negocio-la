@@ -1,40 +1,157 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Protótipo de Plantas</title>
+    <title>FloraMA - Catálogo de Cultivo</title>
+    <link href="https://cdn.jsdelivr.net/npm/remixicon@3.5.0/fonts/remixicon.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-    <main id="pagina-inicial">
-        <h1>Protótipo</h1>
-        
-        <input type="text" class="campo-pesquisa" placeholder="Pesquisar planta...">
+    <div id="loginScreen" class="auth-overlay hidden">
+        <div class="auth-box">
+            <div class="auth-header">
+                <h2>Flora<span class="highlight">MA</span></h2>
+                <p>Acesso Administrativo</p>
+            </div>
+            <form id="loginForm">
+                <div class="form-group">
+                    <label>Email</label>
+                    <div class="input-icon">
+                        <i class="ri-mail-line"></i>
+                        <input type="email" id="loginEmail" placeholder="admin@florama.com" required>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Senha</label>
+                    <div class="input-icon">
+                        <i class="ri-lock-line"></i>
+                        <input type="password" id="loginPassword" placeholder="••••••" required>
+                    </div>
+                </div>
+                <button type="submit" class="btn-submit btn-full">Entrar</button>
+            </form>
+            <button id="closeLoginBtn" class="btn-link">Voltar ao Catálogo</button>
+        </div>
+    </div>
 
-        <div id="conteiner-geral">
-            <div class="header-categoria">
-                <select name="categorias" id="categorias">
-                    <option value="alta">Em Alta</option>
-                    <option value="medicinais">Medicinais</option>
-                    <option value="decorativas">Decorativas</option>
-                </select>
+    <div id="adminScreen" class="hidden">
+        <header class="admin-header">
+            <div class="container admin-nav">
+                <h3>FloraMA <span class="badge">Admin</span></h3>
+                <button id="logoutBtn" class="btn-sm btn-danger"><i class="ri-logout-box-r-line"></i> Sair</button>
+            </div>
+        </header>
+        <main class="container admin-content">
+            <div class="admin-stats">
+                <div class="stat-card">
+                    <i class="ri-message-2-line"></i>
+                    <h3 id="totalFeedbacks">0</h3>
+                    <p>Comentários</p>
+                </div>
+                <div class="stat-card">
+                    <i class="ri-plant-line"></i>
+                    <h3 id="totalPlants">0</h3>
+                    <p>Plantas no Catálogo</p>
+                </div>
             </div>
 
-            <div id="conteiner-plantas">
-                <div class="box-plantas">
-                    <div class="container-img-planta">
-                        <img src="OIP.jfif" alt="Imagem da planta">
+            <div class="admin-section">
+                <h3><i class="ri-chat-history-line"></i> Feedbacks e Sugestões Recebidas</h3>
+                <div id="feedbackList" class="feedback-list">
+                    <p class="loading-text">Carregando dados...</p>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <div id="mainApp">
+        <header class="hero">
+            <div class="container">
+                <nav class="top-nav">
+                    <h1>Flora<span class="highlight">MA</span></h1>
+                    <button onclick="toggleLogin()" class="btn-transparent"><i class="ri-user-settings-line"></i></button>
+                </nav>
+                <p>Guia de plantas nativas e cultivos do Maranhão</p>
+                
+                <div class="search-box">
+                    <i class="ri-search-line"></i>
+                    <input type="text" id="searchInput" placeholder="Buscar por nome (ex: Bacuri)...">
+                </div>
+            </div>
+        </header>
+
+        <nav class="filters container">
+            <button class="filter-btn active" data-category="all">Todas</button>
+            <button class="filter-btn" data-category="frutas">Frutas</button>
+            <button class="filter-btn" data-category="hortalicas">Hortaliças</button>
+            <button class="filter-btn" data-category="raizes">Raízes</button>
+            <button class="filter-btn" data-category="medicinais">Medicinais</button>
+        </nav>
+
+        <main class="container">
+            <div id="plantsGrid" class="grid-container">
+                <div class="loader">Carregando catálogo...</div>
+            </div>
+        </main>
+
+        <section class="feedback-section">
+            <div class="container">
+                <h2><i class="ri-chat-smile-2-line"></i> Contribua com o Catálogo</h2>
+                <p>Sentiu falta de alguma planta ou tem uma dica de cultivo? Conte para nós.</p>
+                
+                <form id="feedbackForm">
+                    <div class="form-group">
+                        <label>Seu Nome</label>
+                        <input type="text" id="feedbackName" required placeholder="Digite seu nome">
                     </div>
-                    <div class="previa-base-planta">
-                        <span class="nome-planta">Nome da Planta</span>
-                        <span class="desc-planta">Descrição breve sobre as propriedades desta planta específica.</span>
+                    <div class="form-group">
+                        <label>Sua Mensagem</label>
+                        <textarea id="feedbackMessage" rows="4" required placeholder="Ex: Faltou falar sobre o Murici..."></textarea>
+                    </div>
+                    <button type="submit" class="btn-submit">Enviar Feedback</button>
+                </form>
+            </div>
+        </section>
+
+        <footer>
+            <p>&copy; 2025 FloraMA - Valorizando a agricultura maranhense.</p>
+        </footer>
+    </div>
+
+    <div id="plantModal" class="modal hidden">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <div class="modal-header-img" id="modalImg"></div>
+            <div class="modal-body">
+                <span class="category-tag" id="modalCategory">Categoria</span>
+                <h2 id="modalName">Nome da Planta</h2>
+                <p class="scientific" id="modalScientific">Nome Científico</p>
+                
+                <div class="info-box">
+                    <h3><i class="ri-file-text-line"></i> Descrição</h3>
+                    <p id="modalDesc"></p>
+                </div>
+
+                <div class="info-grid">
+                    <div class="info-box">
+                        <h3><i class="ri-sun-cloudy-line"></i> Época (MA)</h3>
+                        <p id="modalSeason"></p>
+                    </div>
+                    <div class="info-box">
+                        <h3><i class="ri-restaurant-line"></i> Uso Típico</h3>
+                        <p id="modalUsage"></p>
                     </div>
                 </div>
             </div>
         </div>
-    </main>
+    </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-database.js"></script>
+    
+    <script src="script.js"></script>
 </body>
 </html>
